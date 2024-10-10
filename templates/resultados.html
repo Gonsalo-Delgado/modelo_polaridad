@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados del modelo de polaridad</title>
+    <link rel="icon" href="{{ url_for('static', filename='images/icono.svg') }}" type="image/png">
+    <link href="{{ url_for('static', filename='css/output.css') }}" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="{{ url_for('static', filename='js/resultados.js') }}"></script>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans min-h-screen">
+    <div class="container mx-auto px-4 py-12">
+        <div class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-gray-800 mb-4">Resultados del Modelo de Polaridad</h1>
+            <p class="text-xl text-gray-600">Clasificación Automática para Notas Periodísticas</p>
+        </div>
+
+        <div class="flex flex-col md:flex-row justify-center items-center gap-4 mb-12">
+            <a href="/" class="bg-blue-600 text-white py-3 px-6 rounded-full hover:bg-blue-700 transition duration-300 inline-flex items-center justify-center shadow-lg">
+                <i class="fas fa-newspaper mr-2"></i> Clasificar nuevas notas
+            </a>
+            <button onclick="downloadGeneralExcel()" class="bg-emerald-500 text-white py-3 px-6 rounded-full hover:bg-emerald-600 transition duration-300 inline-flex items-center justify-center shadow-lg">
+                <i class="fas fa-download mr-2"></i> Descargar Excel
+            </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-center">
+            {% for resultado in resultados %}
+                <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100">
+                    <div id="polaridad-{{ loop.index }}" class="text-center p-2 rounded-lg mb-4 max-w-xs mx-auto inline-block font-semibold">
+                        Polaridad: {{ resultado.polaridad }}
+                    </div>
+
+                    <h2 class="text-xl font-bold mb-4 text-gray-800">{{ resultado.nombre }}</h2>
+
+                    <button onclick="showModalTable({{ loop.index }})" class="w-full bg-blue-500 text-white py-3 px-4 rounded-lg hover:bg-blue-600 transition duration-300 flex items-center justify-center mb-3 shadow">
+                        <i class="fas fa-table mr-2"></i> Ver resultados
+                    </button>
+
+                    <button onclick="showModalText('{{ resultado.texto_extraido | replace('`', '\\`') }}')" class="w-full bg-emerald-500 text-white py-3 px-4 rounded-lg hover:bg-emerald-600 transition duration-300 flex items-center justify-center shadow">
+                        <i class="fas fa-file-alt mr-2"></i> Ver texto extraído
+                    </button>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div id="modal-table" class="hidden fixed inset-0 bg-black bg-opacity-50 overflow-y-auto h-full w-full z-50 backdrop-blur-sm">
+        <div class="relative top-20 mx-auto p-8 border w-11/12 md:w-3/4 lg:w-2/3 shadow-2xl rounded-2xl bg-white">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-3xl font-bold text-gray-800">Resultados de Clasificación</h2>
+                <button onclick="closeModal('modal-table')" class="text-gray-500 hover:text-gray-700 text-2xl">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="modal-table-content" class="overflow-x-auto"></div>
+        </div>
+    </div>
+
+    <div id="modal-text" class="hidden fixed inset-0 bg-black bg-opacity-50 overflow-y-auto h-full w-full z-50 backdrop-blur-sm">
+        <div class="relative top-20 mx-auto p-8 border w-11/12 md:w-3/4 lg:w-2/3 shadow-2xl rounded-2xl bg-white">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-3xl font-bold text-gray-600">Texto Extraído</h2>
+                <button onclick="closeModal('modal-text')" class="text-gray-500 hover:text-gray-700 text-2xl">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <p id="modal-text-content" class="text-gray-700 max-h-96 overflow-y-auto text-lg leading-relaxed"></p>
+        </div>
+    </div>
+
+    <script>
+        const resultados = {{ resultados | safe }};
+    </script>
+</body>
+</html>

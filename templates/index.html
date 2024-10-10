@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modelo de Clasificación de Polaridad</title>
+    <link rel="icon" href="{{ url_for('static', filename='images/icono.svg') }}" type="image/png">
+    <link rel="shortcut icon" href="./static/icono.svg" type="image/x-icon">
+    <link href="{{ url_for('static', filename='css/output.css') }}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex items-center justify-center p-4">
+
+    <div class="bg-white shadow-2xl rounded-2xl p-8 max-w-lg w-full">
+
+        <h1 class="text-3xl font-extrabold text-gray-800 text-center mb-6">
+            Modelo de Clasificación de Polaridad
+        </h1>
+
+        <p class="text-lg text-gray-600 text-center mb-8">
+            Suba una nota periodística y descubra su polaridad: positiva, negativa o neutra.
+        </p>
+
+        <form method="POST" enctype="multipart/form-data" onsubmit="return showLoader()">
+
+            <p class="text-sm text-gray-500 mb-6 text-center">
+                Seleccione archivos y haga clic en "Clasificar" para analizar la polaridad.
+            </p>
+
+            <div id="file-upload-container" class="flex flex-col justify-center mb-4">
+                <label class="w-full flex flex-col items-center px-4 py-6 bg-blue-50 text-blue-500 rounded-xl shadow-md tracking-wide border-2 border-blue-200 cursor-pointer hover:bg-blue-100 hover:text-blue-600 transition duration-300 ease-in-out">
+                    <i class="fas fa-folder-open fa-3x mb-3"></i>
+                    <span id="file-label" class="mt-2 text-lg font-semibold">Seleccionar archivos</span>
+                    <input id="file-upload" type="file" name="images" accept=".png, .jpg, .jpeg" class="hidden" multiple required onchange="updateFileList()">
+                </label>
+            </div>
+
+            <div id="file-info" class="mb-6 hidden bg-gray-100 rounded-lg p-4">
+                <ul id="file-list" class="list-none"></ul>
+            </div>
+
+            <button id="cancel-button" type="button" class="w-full bg-red-500 text-white py-3 rounded-xl hover:bg-red-600 transition duration-300 font-semibold mt-4 hidden" onclick="cancelSelection()">
+                Cancelar
+            </button>
+
+            <button type="submit" id="classify-button" class="w-full bg-blue-600 text-white py-3 rounded-xl hover:bg-blue-700 transition duration-300 font-semibold mt-4 shadow-lg">
+                Clasificar
+            </button>
+
+            <div id="loader" class="hidden flex flex-col items-center mt-6">
+                <div class="flex justify-center">
+                    <div class="w-3 h-3 bg-blue-600 rounded-full mx-1 animate-bounce-slow"></div>
+                    <div class="w-3 h-3 bg-blue-600 rounded-full mx-1 animate-bounce-slow" style="animation-delay: 0.2s;"></div>
+                    <div class="w-3 h-3 bg-blue-600 rounded-full mx-1 animate-bounce-slow" style="animation-delay: 0.4s;"></div>
+                </div>
+                <p class="text-center text-gray-600 mt-4 font-semibold">Clasificando polaridad, por favor espere...</p>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
